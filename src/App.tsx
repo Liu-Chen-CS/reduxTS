@@ -1,26 +1,41 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "./store";
+import {
+    changePerson,
+    CounterState,
+    decrement,
+    fetchFunFact,
+    FunFactType,
+    increment
+} from "./store/modules/counterSlice";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const {name, age, funFact} = useSelector((state: RootState): CounterState => state.CounterReducer);
+    const dispatch:AppDispatch = useDispatch();
+    return (
+        <div className="App">
+            {name} - {age}
+            <button onClick={(): void => {
+                dispatch(increment())
+            }}>+age
+            </button>
+            <button onClick={(): void => {
+                dispatch(decrement())
+            }}>-age
+            </button>
+            <button onClick={(): void => {
+                dispatch(changePerson({name: "Lisa Guillard", age: 24}))
+            }}>change person
+            </button>
+            <ul>
+                {funFact?.map((item:FunFactType) => <li key={item.id}>{item.attributes.body}</li>)}
+            </ul>
+            <button onClick={():void=>{dispatch(fetchFunFact())}}>get fun fact</button>
+        </div>
+    );
 }
 
 export default App;
